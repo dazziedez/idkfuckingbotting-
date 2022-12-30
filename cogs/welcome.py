@@ -29,11 +29,7 @@ class Welcome(commands.Cog, name="Welcome"):
             await log.send(embed=logembed)
             return
 
-        for _ in member_roles:
-            roles = []
-            role_obj = discord.utils.get(
-                guild.roles, id=random.choice(member_roles))
-            roles.append(role_obj)
+        roles = tuple(discord.utils.get(guild.roles, id=int(i)) for i in member_roles)
 
         if not member.bot:
             zingus = random.choice(roles)
