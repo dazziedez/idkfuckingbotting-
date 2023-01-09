@@ -37,6 +37,9 @@ class Events(commands.Cog, name="Events"):
 
 	@commands.Cog.listener()
 	async def on_message_edit(self, before, after):
+		if before.content == after.content:
+			return
+		
 		guild = self.client.get_guild(874440438604496976)
 		log = guild.get_channel(876104888122212413)
 
