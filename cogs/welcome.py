@@ -5,15 +5,15 @@ from discord.ext import commands
 from random import choice
 
 thing = [
-"Welcome aboard, {user}!"
-"Glad to have you here, {user}!"
-"Welcome to the party, {user}!"
-"It's great to have you here, {user}!"
-"Welcome to the family, {user}!"
-"Glad you could join us, {user}!"
-"Welcome with open arms, {user}!"
-"We've been expecting you, {user}!"
-"Glad you made it, {user}!"
+"Welcome aboard, {user}!",
+"Glad to have you here, {user}!",
+"Welcome to the party, {user}!",
+"It's great to have you here, {user}!",
+"Welcome to the family, {user}!",
+"Glad you could join us, {user}!",
+"Welcome with open arms, {user}!",
+"We've been expecting you, {user}!",
+"Glad you made it, {user}!",
 "Welcome to the club, {user}!"]
 
 class Welcome(commands.Cog, name="Welcome"):
