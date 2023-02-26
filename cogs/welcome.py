@@ -4,6 +4,17 @@ import random
 from discord.ext import commands
 from random import choice
 
+thing = [
+"Welcome aboard, {user}!"
+"Glad to have you here, {user}!"
+"Welcome to the party, {user}!"
+"It's great to have you here, {user}!"
+"Welcome to the family, {user}!"
+"Glad you could join us, {user}!"
+"Welcome with open arms, {user}!"
+"We've been expecting you, {user}!"
+"Glad you made it, {user}!"
+"Welcome to the club, {user}!"]
 
 class Welcome(commands.Cog, name="Welcome"):
     def __init__(self, client):
@@ -35,6 +46,7 @@ class Welcome(commands.Cog, name="Welcome"):
             zingus = random.choice(roles)
             await member.add_roles(zingus)
 
+        welcome_msg = random.choice(thing).replace("{user}", member.mention)
 
         logembed = discord.Embed(
             title='📥 Member joined', description=f'{member}')
@@ -43,8 +55,8 @@ class Welcome(commands.Cog, name="Welcome"):
         logembed.set_thumbnail(url=member.avatar.url)
 
         await member.send(f'Welcome to **{guild.name}**, {member.name}!\njust to make things clear, you\'ll die if you leave\nhttps://discord.gg/T5BZayunBB')
-        await general.send(f'{member.mention} just joined, say hi!',
-                           delete_after=60)
+        await general.send(welcome_msg,
+                           delete_after=240)
         await verify.send(f'welcome {member.mention}!\nPlease react with ✅ above to gain access to the server',
                           delete_after=10)
         await log.send(embed=logembed)
