@@ -43,7 +43,7 @@ class Autopublish(commands.Cog):
     async def on_message(self, message):
         with open('config.json', 'r') as f:
             data = json.load(f)
-            if message.channel.id in data["autopub"]:
+            if message.channel.id in data["autopub"] and not message.author.bot:
                 try:
                     await message.publish()
                 except:
