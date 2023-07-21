@@ -1,4 +1,8 @@
 {
+    
     "token": "the tokening",
-    "autopub": []
+    "autopub": [
+    ],
+    "boosters": {
+    }
 }
