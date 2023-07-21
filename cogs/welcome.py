@@ -1,8 +1,8 @@
 import discord
 import time
 import random
+import asyncio
 from discord.ext import commands
-from random import choice
 
 thing = [
     "Welcome aboard, {user}!",
@@ -28,12 +28,17 @@ class WelcomeButton(discord.ui.View):
     async def disable_all(self):
         for i in self.children:
             i.disabled = True
-        await self.msg.edit(view=self)
 
-    async def on_timeout(self):
-        self.reacted = None
+        if self.msg:
+            await self.delet.edit(view=self)
+            print("gone forever")
+        return
+
+    async def on_timeout(self) -> None:
+        print("timeout")
+        await self.disable_all()
         self.msg = None
-        return await self.disable_all()
+        self.reacted = None
 
     @discord.ui.button(label="Say hi!", emoji="<a:waving:1070739085506924635>")
     async def wave(self, interaction, button):
@@ -43,8 +48,8 @@ class WelcomeButton(discord.ui.View):
         else:
             self.msg = await interaction.channel.fetch_message(self.msg.id)
             if interaction.user.id not in self.reacted:
-                msg = f"{interaction.user.mention}, {self.msg.content}"
-                await self.msg.edit(content=msg)
+                content = f"{interaction.user.mention}, {self.msg.content}"
+                await self.msg.edit(content=content)
             else:
                 await interaction.followup.send("You've already greeted this individual!! :)", ephemeral=True)
         if interaction.user.id not in self.reacted:
@@ -59,7 +64,6 @@ class Welcome(commands.Cog, name="Welcome"):
     async def on_member_join(self, member):
         guild = self.client.get_guild(874440438604496976)
         log = guild.get_channel(876104888122212413)
-        verify = guild.get_channel(876102248185339925)
         general = guild.get_channel(876085929117352016)
 
         member_roles = [1058073878494191646, 1058073795165966456,
@@ -90,11 +94,14 @@ class Welcome(commands.Cog, name="Welcome"):
                            value=f'<t:{int(member.created_at.timestamp())}:R>')
         logembed.set_thumbnail(url=member.avatar.url)
 
-        await member.send(f'Welcome to **{guild.name}**, {member.name}!\njust to make things clear, you\'ll die if you leave\nhttps://discord.gg/etyCBVj8Bx')
-        await general.send(welcome_msg,
-                           delete_after=240,
-                           view=view)
+        await member.send(f'Welcome to **{guild.name}**, {member.name}!\njust to make things clear, you\'ll die if you leave\nhttps://discord.gg/DukNVUSNAM')
+        delet = await general.send(welcome_msg,
+                                   view=view)
+        view.delet = delet
         await log.send(embed=logembed)
+        await asyncio.sleep(180)
+        if view.reacted == [] or view.reacted is None:
+            await delet.delete()
 
 
 async def setup(client):
