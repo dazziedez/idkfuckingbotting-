@@ -1,6 +1,11 @@
 import discord
 import os
-from discord.ext import commands
+import json
+
+from discord.ext import commands, tasks
+
+guild_id = 874440438604496976
+booster_id = 881222980858966017
 
 class Core(commands.Cog, name="Core"):
 	def __init__(self, client):
@@ -8,7 +13,7 @@ class Core(commands.Cog, name="Core"):
 	
 	@commands.Cog.listener()
 	async def on_message(self, message):
-		if message.content == "<@879083602082684968>":
+		if "<@879083602082684968>" in message.content:
 			await message.reply("uwu")
 		
 	@commands.Cog.listener()
@@ -37,6 +42,38 @@ class Core(commands.Cog, name="Core"):
 		await self.client.change_presence(activity=discord.Activity(
 			type=discord.ActivityType.watching, name="you - .gg/bottle"))
 		print(f"🟩 Logged in as {self.client.user} with a {round(self.client.latency * 1000)}ms delay")
+
+		if not self.check_boosters.is_running():
+			self.check_boosters.start()
+
+	@tasks.loop(minutes=1)
+	async def check_boosters(self):
+		with open('config.json', 'r') as file:
+			data = json.load(file)
+			boosters = data.get('boosters', {})
+			guild = self.client.get_guild(guild_id)
+			users_to_remove = []  # List to store user IDs to remove
+			for user_id, role_id in boosters.items():
+				member = guild.get_member(int(user_id))
+				if member is None:
+					print(f"User {user_id} is no longer in the guild. Removing from boosters and deleting role.")
+					role = guild.get_role(int(role_id))
+					await role.delete()
+					users_to_remove.append(user_id)  # Add user ID to the list for removal
+				elif booster_id not in [r.id for r in member.roles if r.id != guild.id]:
+					print(f"User {user_id} has stopped boosting. Removing from boosters and deleting role.")
+					role = guild.get_role(int(role_id))
+					if role is not None:
+						await role.delete()
+					users_to_remove.append(user_id)  # Add user ID to the list for removal
+	
+			# Remove users from the boosters dictionary
+			for user_id in users_to_remove:
+				del boosters[user_id]
+	
+		with open('config.json', 'w') as file:
+			json.dump(data, file, indent=4)
+
 
 async def setup(client):
 	await client.add_cog(Core(client))
