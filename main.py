@@ -18,7 +18,5 @@ async def load():
 	await client.load_extension('cogs.core')
 	print('🟪 core extension loaded')
 
-print("MTE3Njk5MzgwNTkyOTU2MjIxMg.GASvYF.bPNchkzVJybHzD5yxi3TzVsNgIij6_IvDS8BUE")
-
 asyncio.run(load())
 client.run(token)
